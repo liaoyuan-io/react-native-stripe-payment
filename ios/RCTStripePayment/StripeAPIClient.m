@@ -28,11 +28,12 @@
 - (void)selectDefaultCustomerSource:(id<STPSource>)source completion:(STPErrorBlock)completion {
     NSString *path = @"/source";
     
-    NSData *data = [NSJSONSerialization dataWithJSONObject:@{ @"token" : [source stripeID] }
+    NSData *data = [NSJSONSerialization dataWithJSONObject:@{ @"source" : [source stripeID] }
                                                    options:NSJSONWritingPrettyPrinted error:nil];
+    
     [self put:path withData:data completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-        STPCustomerDeserializer * deserializer = [[STPCustomerDeserializer alloc] initWithData:data urlResponse: response error:error];
-        completion(deserializer.error);
+        if(((NSHTTPURLResponse*)response).statusCode == 200) completion(nil);
+        else completion(error);
     }];
 }
 
@@ -42,20 +43,23 @@
     NSData *data = [NSJSONSerialization dataWithJSONObject:@{ @"token" : [source stripeID] }
                                                    options:NSJSONWritingPrettyPrinted error:nil];
     
-    NSLog(@"attachSourceToCustomer");
     [self post:path withData:data completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-        STPCustomerDeserializer * deserializer = [[STPCustomerDeserializer alloc] initWithData:data urlResponse: response error:error];
-        completion(deserializer.error);
+        if(((NSHTTPURLResponse*)response).statusCode == 200) completion(nil);
+        else completion(error);
     }];
 }
 
 - (void)put:(NSString*)path withData:(NSData*)data completionHandler:(void(^)(NSData *data, NSURLResponse *response, NSError *error))handler{
     NSURL *url = [NSURL URLWithString: [self.baseURL stringByAppendingString: path ]];
-    NSLog(@"post url: %@ with %@", url, self.authHeader);
+    NSString *dataString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    
+#ifdef DEBUG
+    NSLog(@"post url: %@ with %@ %@", url, self.authHeader, dataString);
+#endif
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
     
     [request setHTTPMethod:@"PUT"];
-    [request setValue:@"text/json" forHTTPHeaderField:@"Content-type"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-type"];
     [request setValue:[NSString stringWithFormat:@"%lu", [data length]] forHTTPHeaderField:@"Content-length"];
     [request setValue:self.authHeader forHTTPHeaderField:@"Authorization"];
     
@@ -67,12 +71,16 @@
 
 - (void)post:(NSString*)path withData:(NSData*)data completionHandler:(void(^)(NSData *data, NSURLResponse *response, NSError *error))handler{
     NSURL *url = [NSURL URLWithString: [self.baseURL stringByAppendingString: path ]];
-    NSLog(@"post url: %@ with %@ %@", url, self.authHeader, [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
+    NSString *dataString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+#ifdef DEBUG
+    NSLog(@"post url: %@ with %@ %@", url, self.authHeader, dataString);
+#endif
     
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
     [request setHTTPMethod:@"POST"];
-    [request setValue:@"text/json" forHTTPHeaderField:@"Content-type"];
-    [request setValue:[NSString stringWithFormat:@"%lu", [data length]] forHTTPHeaderField:@"Content-length"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-type"];
+    
+    [request setValue:[NSString stringWithFormat:@"%lu", [dataString length]] forHTTPHeaderField:@"Content-length"];
     [request setValue:self.authHeader forHTTPHeaderField:@"Authorization"];
     
     [request setHTTPBody:data];
@@ -84,7 +92,6 @@
 
 - (void)get:(NSString*)path completionHandler:(void(^)(NSData *data, NSURLResponse *response, NSError *error))handler{
     NSURL *url = [NSURL URLWithString: [self.baseURL stringByAppendingString: path ]];
-    NSLog(@"get url: %@ with %@", url, self.authHeader);
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
     
     [request setHTTPMethod:@"GET"];

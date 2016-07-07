@@ -18,45 +18,64 @@
 
 - (void)retrieveCustomer:(STPCustomerCompletionBlock)completion {
     NSString *path = @"/customer";
-    NSLog(@"retrieveCustomer");
     [self get:path completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         STPCustomerDeserializer * deserializer = [[STPCustomerDeserializer alloc] initWithData:data urlResponse: response error:error];
         self.customerID = deserializer.customer.stripeID;
-        NSLog(@"customerID: %@", self.customerID);
         completion(deserializer.customer,deserializer.error);
     }];
 }
 
 - (void)selectDefaultCustomerSource:(id<STPSource>)source completion:(STPErrorBlock)completion {
-    NSString *path = @"/customer/select_source";
-    NSString *postString = [NSString stringWithFormat:@"source=%@customer=%@", source, self.customerID];
-    NSLog(@"selectDefaultCustomerSource");
-    [self post:path withPostData:postString completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+    NSString *path = @"/source";
+    
+    NSData *data = [NSJSONSerialization dataWithJSONObject:@{ @"token" : [source stripeID] }
+                                                   options:NSJSONWritingPrettyPrinted error:nil];
+    [self put:path withData:data completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         STPCustomerDeserializer * deserializer = [[STPCustomerDeserializer alloc] initWithData:data urlResponse: response error:error];
         completion(deserializer.error);
     }];
 }
 
 - (void)attachSourceToCustomer:(id<STPSource>)source completion:(STPErrorBlock)completion {
-    NSString *path = @"/customer/sources";
-    NSString *postString = [NSString stringWithFormat:@"source=%@customer=%@", source, self.customerID];
+    NSString *path = @"/source";
+    
+    NSData *data = [NSJSONSerialization dataWithJSONObject:@{ @"token" : [source stripeID] }
+                                                   options:NSJSONWritingPrettyPrinted error:nil];
+    
     NSLog(@"attachSourceToCustomer");
-    [self post:path withPostData:postString completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+    [self post:path withData:data completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         STPCustomerDeserializer * deserializer = [[STPCustomerDeserializer alloc] initWithData:data urlResponse: response error:error];
         completion(deserializer.error);
     }];
 }
 
-- (void)post:(NSString*)path withPostData:(NSString*)postData completionHandler:(void(^)(NSData *data, NSURLResponse *response, NSError *error))handler{
+- (void)put:(NSString*)path withData:(NSData*)data completionHandler:(void(^)(NSData *data, NSURLResponse *response, NSError *error))handler{
     NSURL *url = [NSURL URLWithString: [self.baseURL stringByAppendingString: path ]];
+    NSLog(@"post url: %@ with %@", url, self.authHeader);
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
+    
+    [request setHTTPMethod:@"PUT"];
+    [request setValue:@"text/json" forHTTPHeaderField:@"Content-type"];
+    [request setValue:[NSString stringWithFormat:@"%lu", [data length]] forHTTPHeaderField:@"Content-length"];
+    [request setValue:self.authHeader forHTTPHeaderField:@"Authorization"];
+    
+    [request setHTTPBody:data];
+    
+    NSURLSessionTask *task= [self.session dataTaskWithRequest:request completionHandler:handler];
+    [task resume];
+}
+
+- (void)post:(NSString*)path withData:(NSData*)data completionHandler:(void(^)(NSData *data, NSURLResponse *response, NSError *error))handler{
+    NSURL *url = [NSURL URLWithString: [self.baseURL stringByAppendingString: path ]];
+    NSLog(@"post url: %@ with %@ %@", url, self.authHeader, [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
     
     [request setHTTPMethod:@"POST"];
     [request setValue:@"text/json" forHTTPHeaderField:@"Content-type"];
-    [request setValue:[NSString stringWithFormat:@"%lu", [postData length]] forHTTPHeaderField:@"Content-length"];
+    [request setValue:[NSString stringWithFormat:@"%lu", [data length]] forHTTPHeaderField:@"Content-length"];
     [request setValue:self.authHeader forHTTPHeaderField:@"Authorization"];
     
-    [request setHTTPBody:[postData dataUsingEncoding:NSUTF8StringEncoding]];
+    [request setHTTPBody:data];
     
     NSURLSessionTask *task= [self.session dataTaskWithRequest:request completionHandler:handler];
     [task resume];
@@ -65,13 +84,13 @@
 
 - (void)get:(NSString*)path completionHandler:(void(^)(NSData *data, NSURLResponse *response, NSError *error))handler{
     NSURL *url = [NSURL URLWithString: [self.baseURL stringByAppendingString: path ]];
+    NSLog(@"get url: %@ with %@", url, self.authHeader);
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
     
     [request setHTTPMethod:@"GET"];
-    [request setValue:@"text/json" forHTTPHeaderField:@"Content-type"];
     [request setValue:self.authHeader forHTTPHeaderField:@"Authorization"];
     
-    NSURLSessionTask *task= [self.session dataTaskWithRequest:request completionHandler:handler];
+    NSURLSessionDataTask *task= [self.session dataTaskWithRequest:request completionHandler:handler];
     [task resume];
 }
 

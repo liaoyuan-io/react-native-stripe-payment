@@ -17,18 +17,17 @@ RCT_EXPORT_METHOD(selectPayment:(NSDictionary *)options resolver:(RCTPromiseReso
      *       prefilledInformation
      *  in options
      */
+    self.contextDidChangeHandler = [options valueForKey:@"contextDidChangeHandler"];
+    self.didCreatePaymentResultHandler = [options valueForKey:@"didCreatePaymentResultHandler"];
     [[STPPaymentConfiguration sharedConfiguration] setPublishableKey: [options valueForKey:@"publishableKey"]];
     self.APIClient = [StripeAPIClient sharedInit: [options valueForKey:@"baseUrl"] withAuthHeader: [options valueForKey:@"authHeader"]];
     self.paymentContext = [[STPPaymentContext alloc] initWithAPIAdapter:self.APIClient];
     self.paymentContext.delegate = self;
+    self.paymentContext.paymentAmount = 1000;
     UIViewController *root = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
     self.paymentContext.hostViewController = root;
+    
     [self.paymentContext presentPaymentMethodsViewController];
-}
-
-
-RCT_EXPORT_METHOD(requestPqyment:(NSDictionary *)options resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-    [self.paymentContext requestPayment];
 }
 
 - (void)paymentContextDidChange:(STPPaymentContext *)paymentContext {
@@ -36,6 +35,8 @@ RCT_EXPORT_METHOD(requestPqyment:(NSDictionary *)options resolver:(RCTPromiseRes
 }
 
 - (void)paymentContext:(STPPaymentContext *)paymentContext didCreatePaymentResult:(STPPaymentResult *)paymentResult completion:(STPErrorBlock)completion {
+    NSLog(@"didCreatePaymentResult");
+    self.didCreatePaymentResultHandler(@[[[paymentResult source] stripeID]]);
     completion(nil);
     //TODO: call didCreatePaymentResultHandler
 }
@@ -46,6 +47,7 @@ RCT_EXPORT_METHOD(requestPqyment:(NSDictionary *)options resolver:(RCTPromiseRes
 }
 
 - (void)paymentContext:(STPPaymentContext *)paymentContext didFailToLoadWithError:(NSError *)error {
+    NSLog(@"didFailToLoadWithError");
     //TODO: reject
 }
 

@@ -7,6 +7,7 @@
 //
 
 #import <XCTest/XCTest.h>
+#import <XCTest/XCTestAssertions.h>
 #import "StripeAPIClient.h"
 
 @interface RCTStripePaymentTests : XCTestCase
@@ -19,28 +20,18 @@
 
 - (void)setUp {
     [super setUp];
-    self.subject = [StripeAPIClient sharedInit:@"base_url" customerID:@"1"];
-    // Put setup code here. This method is called before the invocation of each test method in the class.
+    self.subject = [StripeAPIClient sharedInit:@"http://dev.liaoyuan.io/payment" withAuthHeader:@"FSign user=\"56e6d2cc25ac03ad06c7d7d3\",token=\"0d5daeb27a684e15e87de883975d1a32\""];
 }
 
 - (void)tearDown {
-    // Put teardown code here. This method is called after the invocation of each test method in the class.
     [super tearDown];
 }
 
 - (void)testExample {
     [self.subject retrieveCustomer:^(STPCustomer * _Nullable customer, NSError * _Nullable error) {
-        
+        XCTAssertEqualObjects(customer.stripeID, @"5704ad02913d22ef78885bff");
     }];
-    // This is an example of a functional test case.
-    // Use XCTAssert and related functions to verify your tests produce the correct results.
 }
 
-- (void)testPerformanceExample {
-    // This is an example of a performance test case.
-    [self measureBlock:^{
-        // Put the code you want to measure the time of here.
-    }];
-}
 
 @end

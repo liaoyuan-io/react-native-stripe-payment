@@ -1,0 +1,28 @@
+{
+  "name": "react-native-stripe-payment",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/liaoyuan-io/react-native-stripe-payment.git"
+  },
+  "keywords": [
+    "react",
+    "native",
+    "react-native",
+    "stripe"
+  ],
+  "author": "Guangcheng Wei",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/liaoyuan-io/react-native-stripe-payment/issues"
+  },
+  "homepage": "https://github.com/liaoyuan-io/react-native-stripe-payment#readme",
+  "peerDependencies": {
+    "react-native": ">=0.26.0"
+  }
+}

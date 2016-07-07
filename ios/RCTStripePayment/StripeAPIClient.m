@@ -18,9 +18,11 @@
 
 - (void)retrieveCustomer:(STPCustomerCompletionBlock)completion {
     NSString *path = @"/customer";
+    NSLog(@"retrieveCustomer");
     [self get:path completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         STPCustomerDeserializer * deserializer = [[STPCustomerDeserializer alloc] initWithData:data urlResponse: response error:error];
         self.customerID = deserializer.customer.stripeID;
+        NSLog(@"customerID: %@", self.customerID);
         completion(deserializer.customer,deserializer.error);
     }];
 }
@@ -28,7 +30,7 @@
 - (void)selectDefaultCustomerSource:(id<STPSource>)source completion:(STPErrorBlock)completion {
     NSString *path = @"/customer/select_source";
     NSString *postString = [NSString stringWithFormat:@"source=%@customer=%@", source, self.customerID];
-    
+    NSLog(@"selectDefaultCustomerSource");
     [self post:path withPostData:postString completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         STPCustomerDeserializer * deserializer = [[STPCustomerDeserializer alloc] initWithData:data urlResponse: response error:error];
         completion(deserializer.error);
@@ -38,7 +40,7 @@
 - (void)attachSourceToCustomer:(id<STPSource>)source completion:(STPErrorBlock)completion {
     NSString *path = @"/customer/sources";
     NSString *postString = [NSString stringWithFormat:@"source=%@customer=%@", source, self.customerID];
-    
+    NSLog(@"attachSourceToCustomer");
     [self post:path withPostData:postString completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         STPCustomerDeserializer * deserializer = [[STPCustomerDeserializer alloc] initWithData:data urlResponse: response error:error];
         completion(deserializer.error);
@@ -56,7 +58,8 @@
     
     [request setHTTPBody:[postData dataUsingEncoding:NSUTF8StringEncoding]];
     
-    [self.session dataTaskWithRequest:request completionHandler:handler];
+    NSURLSessionTask *task= [self.session dataTaskWithRequest:request completionHandler:handler];
+    [task resume];
 }
 
 
@@ -68,7 +71,8 @@
     [request setValue:@"text/json" forHTTPHeaderField:@"Content-type"];
     [request setValue:self.authHeader forHTTPHeaderField:@"Authorization"];
     
-    [self.session dataTaskWithRequest:request completionHandler:handler];
+    NSURLSessionTask *task= [self.session dataTaskWithRequest:request completionHandler:handler];
+    [task resume];
 }
 
 @end

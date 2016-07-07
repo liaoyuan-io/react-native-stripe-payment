@@ -26,6 +26,11 @@ RCT_EXPORT_METHOD(selectPayment:(NSDictionary *)options resolver:(RCTPromiseReso
     [self.paymentContext presentPaymentMethodsViewController];
 }
 
+
+RCT_EXPORT_METHOD(requestPqyment:(NSDictionary *)options resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    [self.paymentContext requestPayment];
+}
+
 - (void)paymentContextDidChange:(STPPaymentContext *)paymentContext {
     //TODO: call contextDidChangeHandler
 }

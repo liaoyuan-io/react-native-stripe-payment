@@ -12,8 +12,6 @@
 		9C0429F71D2DD9D90023CE1C /* StripeAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C0429F61D2DD9D90023CE1C /* StripeAPIClient.m */; };
 		9C042A001D2E1D4F0023CE1C /* RCTStripePaymentTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C0429FF1D2E1D4F0023CE1C /* RCTStripePaymentTests.m */; };
 		9C042A021D2E1D4F0023CE1C /* libRCTStripePayment.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C0429E81D2DD40B0023CE1C /* libRCTStripePayment.a */; };
-		9C778C181D2EA4BD0073DDB1 /* Stripe.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C778C171D2EA4BD0073DDB1 /* Stripe.framework */; };
-		9C778C191D2EA4BD0073DDB1 /* Stripe.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C778C171D2EA4BD0073DDB1 /* Stripe.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,7 +46,6 @@
 		9C0429FD1D2E1D4F0023CE1C /* RCTStripePaymentTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RCTStripePaymentTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9C0429FF1D2E1D4F0023CE1C /* RCTStripePaymentTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCTStripePaymentTests.m; sourceTree = "<group>"; };
 		9C042A011D2E1D4F0023CE1C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		9C778C171D2EA4BD0073DDB1 /* Stripe.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Stripe.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,7 +53,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9C778C181D2EA4BD0073DDB1 /* Stripe.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,7 +61,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				9C042A021D2E1D4F0023CE1C /* libRCTStripePayment.a in Frameworks */,
-				9C778C191D2EA4BD0073DDB1 /* Stripe.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,7 +73,6 @@
 				9C0429EA1D2DD40B0023CE1C /* RCTStripePayment */,
 				9C0429FE1D2E1D4F0023CE1C /* RCTStripePaymentTests */,
 				9C0429E91D2DD40B0023CE1C /* Products */,
-				9C778C171D2EA4BD0073DDB1 /* Stripe.framework */,
 			);
 			sourceTree = "<group>";
 		};
@@ -113,6 +107,16 @@
 		};
 /* End PBXGroup section */
 
+/* Begin PBXHeadersBuildPhase section */
+		9C3522931D2ECB4900BBFEB1 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
 /* Begin PBXNativeTarget section */
 		9C0429E71D2DD40B0023CE1C /* RCTStripePayment */ = {
 			isa = PBXNativeTarget;
@@ -121,6 +125,7 @@
 				9C0429E41D2DD40B0023CE1C /* Sources */,
 				9C0429E51D2DD40B0023CE1C /* Frameworks */,
 				9C0429E61D2DD40B0023CE1C /* CopyFiles */,
+				9C3522931D2ECB4900BBFEB1 /* Headers */,
 			);
 			buildRules = (
 			);
@@ -246,6 +251,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(FRAMEWORK_DIR)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -290,6 +296,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(FRAMEWORK_DIR)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -311,11 +318,13 @@
 				ARCHS = "32-bits";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/RCTStripePayment/Carthage/Build/iOS",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-					"$(PROJECT_DIR)",
+					"$(SRCROOT)",
+					"$(SRCROOT)/../../../ios/**",
 				);
-				HEADER_SEARCH_PATHS = "$(SRCROOT)/../node_modules/react-native/React/**";
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../node_modules/react-native/React/**",
+					"$(SRCROOT)/../../react-native/React/**",
+				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -328,11 +337,13 @@
 				ARCHS = "32-bits";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
-					"$(PROJECT_DIR)/RCTStripePayment/Carthage/Build/iOS",
-					"$(PROJECT_DIR)/Carthage/Build/iOS",
-					"$(PROJECT_DIR)",
+					"$(SRCROOT)",
+					"$(SRCROOT)/../../../ios/**",
 				);
-				HEADER_SEARCH_PATHS = "$(SRCROOT)/../node_modules/react-native/React/**";
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)/../node_modules/react-native/React/**",
+					"$(SRCROOT)/../../react-native/React/**",
+				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;

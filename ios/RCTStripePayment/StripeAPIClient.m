@@ -3,7 +3,7 @@
 
 @implementation StripeAPIClient
 + (StripeAPIClient*)sharedInit:(NSString*)baseURL withAuthHeader:(NSString*) authHeader{
-    return [StripeAPIClient alloc];
+    return [[StripeAPIClient alloc] init:baseURL withAuthHeader:authHeader];
 }
 
 - (id)init:(NSString*)baseURL withAuthHeader:(NSString*) authHeader {
@@ -18,7 +18,6 @@
 
 - (void)retrieveCustomer:(STPCustomerCompletionBlock)completion {
     NSString *path = @"/customer";
-    
     [self get:path completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
         STPCustomerDeserializer * deserializer = [[STPCustomerDeserializer alloc] initWithData:data urlResponse: response error:error];
         self.customerID = deserializer.customer.stripeID;

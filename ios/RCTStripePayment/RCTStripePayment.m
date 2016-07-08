@@ -4,51 +4,42 @@
 
 RCT_EXPORT_MODULE();
 
-- (id)init {
-    self = [super init];
-    return self;
-}
-
-
-RCT_EXPORT_METHOD(selectPayment:(NSDictionary *)options resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+RCT_EXPORT_METHOD(selectPayment:(NSDictionary *)options) {
     /*  TODO:
-     *  pass contextDidChangeHandler
-     *       didCreatePaymentResultHandler, put STPPaymentResult.source to server
-     *       prefilledInformation
+     *  prefilledInformation
      *  in options
      */
-    self.contextDidChangeHandler = [options valueForKey:@"contextDidChangeHandler"];
-    self.didCreatePaymentResultHandler = [options valueForKey:@"didCreatePaymentResultHandler"];
     [[STPPaymentConfiguration sharedConfiguration] setPublishableKey: [options valueForKey:@"publishableKey"]];
-    self.APIClient = [StripeAPIClient sharedInit: [options valueForKey:@"baseUrl"] withAuthHeader: [options valueForKey:@"authHeader"]];
-    self.paymentContext = [[STPPaymentContext alloc] initWithAPIAdapter:self.APIClient];
+    StripeAPIClient *client = [StripeAPIClient sharedInit: [options valueForKey:@"baseUrl"] withAuthHeader: [options valueForKey:@"authHeader"]];
+    self.paymentContext = [[STPPaymentContext alloc] initWithAPIAdapter:client];
     self.paymentContext.delegate = self;
-    self.paymentContext.paymentAmount = 1000;
     UIViewController *root = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
     self.paymentContext.hostViewController = root;
     
     [self.paymentContext presentPaymentMethodsViewController];
 }
 
+RCT_EXPORT_METHOD(requestPayment:(NSDictionary *)options resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    self.resolve = resolve;
+    self.reject = reject;
+    [self.paymentContext requestPayment];
+}
+
 - (void)paymentContextDidChange:(STPPaymentContext *)paymentContext {
-    //TODO: call contextDidChangeHandler
+    NSLog(@"paymentContext %@", [paymentContext selectedPaymentMethod]);
 }
 
 - (void)paymentContext:(STPPaymentContext *)paymentContext didCreatePaymentResult:(STPPaymentResult *)paymentResult completion:(STPErrorBlock)completion {
-    NSLog(@"didCreatePaymentResult");
-    self.didCreatePaymentResultHandler(@[[[paymentResult source] stripeID]]);
-    completion(nil);
-    //TODO: call didCreatePaymentResultHandler
+    NSLog(@"paymentResult %@");
+    self.resolve([[paymentResult source] stripeID]);
 }
 
 - (void)paymentContext:(STPPaymentContext *)paymentContext didFinishWithStatus:(STPPaymentStatus)status error:(NSError *)error {
-    //TODO: resolve or reject
-    //      resolve with packaged paymentContext
+    NSLog(@"didFinishWithStatus %@");
 }
 
 - (void)paymentContext:(STPPaymentContext *)paymentContext didFailToLoadWithError:(NSError *)error {
-    NSLog(@"didFailToLoadWithError");
-    //TODO: reject
+    self.reject(@"fail_load_customer", @"Failed to load customer",error);
 }
 
 @end

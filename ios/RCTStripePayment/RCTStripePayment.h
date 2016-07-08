@@ -9,6 +9,6 @@
 @interface RCTStripePayment : NSObject <RCTBridgeModule, STPPaymentContextDelegate>
 @property STPPaymentContext * paymentContext;
 @property StripeAPIClient * APIClient;
-@property RCTResponseSenderBlock contextDidChangeHandler;
-@property RCTResponseSenderBlock didCreatePaymentResultHandler;
+@property RCTPromiseResolveBlock resolve;
+@property RCTPromiseRejectBlock reject;
 @end

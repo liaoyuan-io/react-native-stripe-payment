@@ -32,8 +32,10 @@
                                                    options:NSJSONWritingPrettyPrinted error:nil];
     
     [self put:path withData:data completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-        if(((NSHTTPURLResponse*)response).statusCode == 200) completion(nil);
-        else completion(error);
+        if(error != nil) { completion(error); return;}
+        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse*)response;
+        if(httpResponse.statusCode == 200) completion(nil);
+        else completion([NSError errorWithDomain:@"PAYMENT_SELECT_SOURCE_ERROR" code:httpResponse.statusCode userInfo:nil]);
     }];
 }
 
@@ -44,8 +46,10 @@
                                                    options:NSJSONWritingPrettyPrinted error:nil];
     
     [self post:path withData:data completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-        if(((NSHTTPURLResponse*)response).statusCode == 200) completion(nil);
-        else completion(error);
+        if(error != nil) { completion(error); return;}
+        NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse*)response;
+        if(httpResponse.statusCode == 200) completion(nil);
+        else completion([NSError errorWithDomain:@"PAYMENT_ADD_SOURCE_ERROR" code:httpResponse.statusCode userInfo:nil]);
     }];
 }
 
@@ -54,7 +58,7 @@
     NSString *dataString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     
 #ifdef DEBUG
-    NSLog(@"post url: %@ with %@ %@", url, self.authHeader, dataString);
+    NSLog(@"put url: %@ with %@ %@", url, self.authHeader, dataString);
 #endif
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
     

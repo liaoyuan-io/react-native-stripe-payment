@@ -5,11 +5,9 @@
 RCT_EXPORT_MODULE();
 
 RCT_EXPORT_METHOD(selectPayment:(NSDictionary *)options) {
-    /*  TODO:
-     *  prefilledInformation
-     *  in options
-     */
-    [[STPPaymentConfiguration sharedConfiguration] setPublishableKey: [options valueForKey:@"publishableKey"]];
+    STPPaymentConfiguration *config = [STPPaymentConfiguration sharedConfiguration];
+    [config setPublishableKey: [options valueForKey:@"publishableKey"]];
+    [config setRequiredBillingAddressFields:STPBillingAddressFieldsFull];
     StripeAPIClient *client = [StripeAPIClient sharedInit: [options valueForKey:@"baseUrl"] withAuthHeader: [options valueForKey:@"authHeader"]];
     self.paymentContext = [[STPPaymentContext alloc] initWithAPIAdapter:client];
     self.paymentContext.delegate = self;
@@ -17,12 +15,6 @@ RCT_EXPORT_METHOD(selectPayment:(NSDictionary *)options) {
     self.paymentContext.hostViewController = root;
     
     [self.paymentContext presentPaymentMethodsViewController];
-}
-
-RCT_EXPORT_METHOD(resolver:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-    self.resolve = resolve;
-    self.reject = reject;
-    [self.paymentContext requestPayment];
 }
 
 - (void)paymentContextDidChange:(STPPaymentContext *)paymentContext {}

@@ -6,9 +6,17 @@
 
 #import "StripeAPIClient.h"
 
-@interface RCTStripePayment : NSObject <RCTBridgeModule, STPPaymentContextDelegate>
+
+@interface RCTStripePayment : NSObject <RCTBridgeModule, STPPaymentContextDelegate, STPBackendAPIAdapter>
+
 @property STPPaymentContext * paymentContext;
-@property StripeAPIClient * APIClient;
 @property RCTPromiseResolveBlock resolve;
 @property RCTPromiseRejectBlock reject;
+
+@property(retain) NSString *baseURL;
+@property(retain) NSString *authHeader;
+@property(retain) NSString *customerID;
+@property BOOL *changeDefault;
+@property(retain) NSURLSession *session;
+
 @end

@@ -4,8 +4,6 @@
 #import "RCTLog.h"
 @import Stripe;
 
-#import "StripeAPIClient.h"
-
 
 @interface RCTStripePayment : NSObject <RCTBridgeModule, STPPaymentContextDelegate, STPBackendAPIAdapter>
 

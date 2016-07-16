@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		9C0429EC1D2DD40B0023CE1C /* RCTStripePayment.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = 9C0429EB1D2DD40B0023CE1C /* RCTStripePayment.h */; };
 		9C0429EE1D2DD40B0023CE1C /* RCTStripePayment.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C0429ED1D2DD40B0023CE1C /* RCTStripePayment.m */; };
-		9C0429F71D2DD9D90023CE1C /* StripeAPIClient.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C0429F61D2DD9D90023CE1C /* StripeAPIClient.m */; };
 		9C042A001D2E1D4F0023CE1C /* RCTStripePaymentTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 9C0429FF1D2E1D4F0023CE1C /* RCTStripePaymentTests.m */; };
 		9C042A021D2E1D4F0023CE1C /* libRCTStripePayment.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9C0429E81D2DD40B0023CE1C /* libRCTStripePayment.a */; };
 /* End PBXBuildFile section */
@@ -41,8 +40,6 @@
 		9C0429E81D2DD40B0023CE1C /* libRCTStripePayment.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libRCTStripePayment.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		9C0429EB1D2DD40B0023CE1C /* RCTStripePayment.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RCTStripePayment.h; sourceTree = "<group>"; };
 		9C0429ED1D2DD40B0023CE1C /* RCTStripePayment.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCTStripePayment.m; sourceTree = "<group>"; };
-		9C0429F61D2DD9D90023CE1C /* StripeAPIClient.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StripeAPIClient.m; sourceTree = "<group>"; };
-		9C0429F81D2DDA000023CE1C /* StripeAPIClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StripeAPIClient.h; sourceTree = "<group>"; };
 		9C0429FD1D2E1D4F0023CE1C /* RCTStripePaymentTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RCTStripePaymentTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9C0429FF1D2E1D4F0023CE1C /* RCTStripePaymentTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RCTStripePaymentTests.m; sourceTree = "<group>"; };
 		9C042A011D2E1D4F0023CE1C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -90,8 +87,6 @@
 			children = (
 				9C0429EB1D2DD40B0023CE1C /* RCTStripePayment.h */,
 				9C0429ED1D2DD40B0023CE1C /* RCTStripePayment.m */,
-				9C0429F81D2DDA000023CE1C /* StripeAPIClient.h */,
-				9C0429F61D2DD9D90023CE1C /* StripeAPIClient.m */,
 			);
 			path = RCTStripePayment;
 			sourceTree = "<group>";
@@ -204,7 +199,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9C0429F71D2DD9D90023CE1C /* StripeAPIClient.m in Sources */,
 				9C0429EE1D2DD40B0023CE1C /* RCTStripePayment.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -60,3 +60,7 @@ fastlane/screenshots
 iOSInjectionProject/
 
 node_modules/
+
+.idea/
+*.iml
+local.properties

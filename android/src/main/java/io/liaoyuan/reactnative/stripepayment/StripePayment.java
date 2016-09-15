@@ -74,7 +74,7 @@ public class StripePayment extends ReactContextBaseJavaModule{
 
                         @Override
                         public void onSuccess(Token token) {
-                            promise.resolve(token);
+                            promise.resolve(token.getId());
                         }
                     });
 

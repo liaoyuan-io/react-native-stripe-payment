@@ -37,10 +37,10 @@ public class StripePayment extends ReactContextBaseJavaModule{
 
             String number = cardInfo.getString("number");
             int expMonth = cardInfo.getInt("expMonth");
-            int expYear = cardInfo.getInt("expDay");
+            int expYear = cardInfo.getInt("expYear");
             String cvc = cardInfo.getString("cvc");
 
-            Card card = new Card.Builder(number, expYear, expMonth, cvc)
+            Card card = new Card.Builder(number, expMonth, expYear, cvc)
                     .name(cardInfo.getString("name"))
                     .addressLine1(cardInfo.getString("addressLine1"))
                     .addressLine2(cardInfo.getString("addressLine2"))
